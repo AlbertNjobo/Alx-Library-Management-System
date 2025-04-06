@@ -1,9 +1,12 @@
 from django.shortcuts import render
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Book, LibraryUser
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Book, LibraryUser, Transaction
 from .serializers import BookSerializer, LibraryUserSerializer
 
 # Create your views here.
@@ -11,6 +14,9 @@ from .serializers import BookSerializer, LibraryUserSerializer
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['copies_available']
+    search_fields = ['title', 'author', 'isbn']
 
     @action(detail=True, methods=['post'])
     def check_out(self, request, pk=None):
