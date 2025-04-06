@@ -10,6 +10,14 @@
         <p class="card-text">ISBN: {{ object.isbn }}</p>
         <p class="card-text">Published Date: {{ object.published_date }}</p>
         <p class="card-text">Copies Available: {{ object.copies_available }}</p>
+        {% if object.copies_available > 0 %}
+        <form method="post" action="{% url 'book-checkout' object.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Check Out</button>
+        </form>
+        {% else %}
+        <p class="text-danger">No copies available</p>
+        {% endif %}
         <a href="/books/list/" class="btn btn-secondary">Back to List</a>
     </div>
 </div>

@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from .models import Book, Transaction
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
@@ -13,6 +13,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.utils import timezone
 
 @login_required
 def custom_logout_view(request):
@@ -109,3 +112,35 @@ class AdminDashboardView(TemplateView):
         context['user_count'] = User.objects.count()
         context['transaction_count'] = Transaction.objects.count()
         return context
+
+@method_decorator(staff_member_required, name='dispatch')
+class TransactionListView(TemplateView):
+    template_name = 'books/transaction_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['transactions'] = Transaction.objects.all().order_by('-check_out_date')
+        return context
+
+class CheckOutView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        book = Book.objects.get(pk=pk)
+        if book.copies_available > 0:
+            library_user = request.user.libraryuser
+            Transaction.objects.create(user=library_user, book=book)
+            book.copies_available -= 1
+            book.save()
+            return HttpResponseRedirect(reverse('borrowing-history'))
+        return HttpResponseRedirect(reverse('book-detail', args=[pk]))
+
+class ReturnBookView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        transaction = Transaction.objects.get(pk=pk, user=request.user.libraryuser, return_date__isnull=True)
+        transaction.return_date = timezone.now()
+        transaction.save()
+
+        book = transaction.book
+        book.copies_available += 1
+        book.save()
+
+        return HttpResponseRedirect(reverse('borrowing-history'))
