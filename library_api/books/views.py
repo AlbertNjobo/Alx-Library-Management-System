@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
-from .models import Book
+from .models import Book, Transaction
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -21,6 +21,7 @@ def custom_logout_view(request):
 class BookListView(LoginRequiredMixin, ListView):
     model = Book
     template_name = 'books/book_list.html'
+    paginate_by = 6  # Display 6 books per page
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -86,3 +87,12 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
+
+class BorrowingHistoryView(LoginRequiredMixin, ListView):
+    model = Transaction
+    template_name = 'books/borrowing_history.html'
+    context_object_name = 'transactions'
+
+    def get_queryset(self):
+        library_user = self.request.user.libraryuser  # Get the associated LibraryUser instance
+        return Transaction.objects.filter(user=library_user).order_by('-check_out_date')

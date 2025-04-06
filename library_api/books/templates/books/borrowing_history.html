@@ -1,0 +1,25 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Borrowing History{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Borrowing History</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Book Title</th>
+            <th>Check-Out Date</th>
+            <th>Return Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.book.title }}</td>
+            <td>{{ transaction.check_out_date }}</td>
+            <td>{% if transaction.return_date %}{{ transaction.return_date }}{% else %}Not Returned{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
