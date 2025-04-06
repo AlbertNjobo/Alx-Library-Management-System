@@ -8,15 +8,19 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LibraryUserSerializer(serializers.ModelSerializer):
-    user = serializers.DictField(write_only=True)
+    username = serializers.CharField(write_only=True)
+    email = serializers.EmailField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = LibraryUser
-        fields = '__all__'
+        fields = ['id', 'date_of_membership', 'is_active', 'username', 'email', 'password']
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        user = User.objects.create_user(**user_data)
+        username = validated_data.pop('username')
+        email = validated_data.pop('email')
+        password = validated_data.pop('password')
+        user = User.objects.create_user(username=username, email=email, password=password)
         library_user = LibraryUser.objects.create(user=user, **validated_data)
         return library_user
 
