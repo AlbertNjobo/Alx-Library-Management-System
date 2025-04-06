@@ -1,0 +1,29 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Transaction Management{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Transaction Management</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Book Title</th>
+            <th>User</th>
+            <th>Check-Out Date</th>
+            <th>Return Date</th>
+            <th>Overdue</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.book.title }}</td>
+            <td>{{ transaction.user.user.username }}</td>
+            <td>{{ transaction.check_out_date }}</td>
+            <td>{% if transaction.return_date %}{{ transaction.return_date }}{% else %}Not Returned{% endif %}</td>
+            <td>{% if transaction.is_overdue %}<span class="text-danger">Yes</span>{% else %}No{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -11,6 +11,7 @@
             <th>Check-Out Date</th>
             <th>Return Date</th>
             <th>Overdue</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,16 @@
             <td>{{ transaction.check_out_date }}</td>
             <td>{% if transaction.return_date %}{{ transaction.return_date }}{% else %}Not Returned{% endif %}</td>
             <td>{% if transaction.is_overdue %}<span class="text-danger">Yes</span>{% else %}No{% endif %}</td>
+            <td>
+                {% if not transaction.return_date %}
+                <form method="post" action="{% url 'book-return' transaction.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning">Return</button>
+                </form>
+                {% else %}
+                Returned
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
