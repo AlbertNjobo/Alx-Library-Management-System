@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm
 from django.views.generic.edit import FormView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, View
@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
+from .forms import CustomUserCreationForm
 
 @login_required
 def custom_logout_view(request):
@@ -74,7 +75,7 @@ class CustomLogoutView(LogoutView):
 
 class RegisterView(FormView):
     template_name = 'books/register.html'
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm  # Use the custom form
     success_url = '/login/'
 
     def form_valid(self, form):

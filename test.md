@@ -1,123 +1,76 @@
-# Testing the Alx Library Management System with Postman
+# Testing the Alx Library Management System Using a Browser
 
-This document provides a step-by-step guide to test the functionalities of the Alx Library Management System using Postman.
+This document provides a step-by-step guide to test the functionalities of the Alx Library Management System using a browser.
 
 ---
 
 ## 1. User Registration
-### Endpoint
-**POST** `/register/`
-
-### Request Body (JSON)
-```json
-{
-  "username": "test_user",
-  "password": "password123",
-  "email": "test_user@example.com"
-}
-```
-
-### Expected Response
-- **201 Created**: User is successfully registered.
+### Steps:
+1. Open your browser and navigate to `http://127.0.0.1:8000/register/`.
+2. Fill in the registration form with the following details:
+   - **Username**: Enter a unique username.
+   - **Email**: Enter a valid email address.
+   - **Password**: Enter a strong password.
+   - **Confirm Password**: Re-enter the password.
+3. Click the "Register" button.
+4. Verify that you are redirected to the login page and see a success message.
 
 ---
 
 ## 2. User Login
-### Endpoint
-**POST** `/login/`
-
-### Request Body (JSON)
-```json
-{
-  "username": "test_user",
-  "password": "password123"
-}
-```
-
-### Expected Response
-- **200 OK**: User is successfully logged in, and a session cookie is returned.
+### Steps:
+1. Navigate to `http://127.0.0.1:8000/login/`.
+2. Enter your registered username and password.
+3. Click the "Login" button.
+4. Verify that you are redirected to the homepage or dashboard.
 
 ---
 
 ## 3. View Books
-### Endpoint
-**GET** `/books/list/`
-
-### Expected Response
-- **200 OK**: A list of books is returned.
-
----
-
-## 4. Search Books
-### Endpoint
-**GET** `/books/list/?q=<search_query>`
-
-### Example
-**GET** `/books/list/?q=Test`
-
-### Expected Response
-- **200 OK**: A filtered list of books matching the search query is returned.
+### Steps:
+1. Navigate to `http://127.0.0.1:8000/books/list/`.
+2. Verify that a list of books is displayed.
+3. Use the search bar to filter books by title, author, or ISBN.
+4. Check the "Show only available books" checkbox to filter available books.
 
 ---
 
-## 5. Borrow a Book (Check-Out)
-### Endpoint
-**POST** `/books/<book_id>/checkout/`
-
-### Expected Response
-- **200 OK**: The book is successfully checked out, and the available copies are decremented.
-
----
-
-## 6. View Borrowing History
-### Endpoint
-**GET** `/borrowing-history/`
-
-### Expected Response
-- **200 OK**: A list of borrowing transactions for the logged-in user is returned.
+## 4. Book Details
+### Steps:
+1. Click on a book title or the "View Details" button from the book list.
+2. Verify that the book details page is displayed, showing the title, author, ISBN, published date, and available copies.
+3. If copies are available, click the "Check Out" button.
+4. Verify that the book is checked out and the available copies are decremented.
 
 ---
 
-## 7. Return a Book
-### Endpoint
-**POST** `/transactions/<transaction_id>/return/`
-
-### Expected Response
-- **200 OK**: The book is successfully returned, and the available copies are incremented.
-
----
-
-## 8. Admin Dashboard
-### Endpoint
-**GET** `/admin-dashboard/`
-
-### Expected Response
-- **200 OK**: An overview of books, users, and transactions is returned.
+## 5. Borrowing History
+### Steps:
+1. Navigate to `http://127.0.0.1:8000/borrowing-history/`.
+2. Verify that a table of borrowing transactions is displayed.
+3. Check the "Return" button for books that have not been returned.
+4. Click the "Return" button and verify that the return date is updated.
 
 ---
 
-## 9. View Transactions (Admin Only)
-### Endpoint
-**GET** `/transactions/`
-
-### Expected Response
-- **200 OK**: A list of all transactions is returned.
+## 6. Profile Update
+### Steps:
+1. Navigate to `http://127.0.0.1:8000/profile/`.
+2. Click the "Edit Profile" button.
+3. Update your profile details and click "Save".
+4. Verify that the changes are reflected on the profile page.
 
 ---
 
-## 10. Send Overdue Notifications
-### Command
-Run the following command in the terminal:
-```bash
-python manage.py send_overdue_notifications
-```
-
-### Expected Outcome
-- Email notifications are sent to users with overdue books.
+## 7. Admin Dashboard
+### Steps:
+1. Log in as an admin user.
+2. Navigate to `http://127.0.0.1:8000/admin-dashboard/`.
+3. Verify that the dashboard displays statistics for books, users, and transactions.
 
 ---
 
 ## Notes
-- Ensure that you are logged in before testing endpoints that require authentication.
-- Use the session cookie returned during login for subsequent requests.
-- Replace `<book_id>` and `<transaction_id>` with actual IDs from your database.
+- Ensure the development server is running by executing `python manage.py runserver`.
+- Use different browsers or incognito mode to test multiple user sessions.
+- Report any issues or unexpected behavior for debugging.
