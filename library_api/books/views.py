@@ -11,6 +11,8 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 @login_required
 def custom_logout_view(request):
@@ -96,3 +98,14 @@ class BorrowingHistoryView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         library_user = self.request.user.libraryuser  # Get the associated LibraryUser instance
         return Transaction.objects.filter(user=library_user).order_by('-check_out_date')
+
+@method_decorator(staff_member_required, name='dispatch')
+class AdminDashboardView(TemplateView):
+    template_name = 'books/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['book_count'] = Book.objects.count()
+        context['user_count'] = User.objects.count()
+        context['transaction_count'] = Transaction.objects.count()
+        return context
