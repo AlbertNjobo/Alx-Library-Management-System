@@ -1,6 +1,15 @@
-<h1>Delete Book</h1>
-<p>Are you sure you want to delete "{{ object.title }}"?</p>
+{% extends 'books/base.html' %}
+
+{% block title %}Delete Book{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Delete Book</h1>
+<div class="alert alert-danger" role="alert">
+    Are you sure you want to delete "{{ object.title }}"?
+</div>
 <form method="post">
     {% csrf_token %}
-    <button type="submit">Yes, delete</button>
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a href="/books/list/" class="btn btn-secondary">Cancel</a>
 </form>
+{% endblock %}

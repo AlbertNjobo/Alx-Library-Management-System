@@ -1,5 +1,15 @@
-<h1>Welcome, {{ user.username }}</h1>
-<p>Email: {{ user.email }}</p>
-<p>Date Joined: {{ user.date_joined }}</p>
+{% extends 'books/base.html' %}
 
-<a href="/logout/">Logout</a>
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Welcome, {{ user.username }}</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Profile Details</h5>
+        <p class="card-text">Email: {{ user.email }}</p>
+        <p class="card-text">Date Joined: {{ user.date_joined }}</p>
+        <a href="/books/list/" class="btn btn-primary">View Books</a>
+    </div>
+</div>
+{% endblock %}
