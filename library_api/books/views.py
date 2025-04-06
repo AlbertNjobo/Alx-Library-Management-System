@@ -1,57 +1,54 @@
-from django.shortcuts import render
-from django.utils import timezone
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.filters import SearchFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import Book, LibraryUser, Transaction
-from .serializers import BookSerializer, LibraryUserSerializer
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from .models import Book
 
-# Create your views here.
+class BookListView(ListView):
+    model = Book
+    template_name = 'books/book_list.html'
 
-class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['copies_available']
-    search_fields = ['title', 'author', 'isbn']
+class BookDetailView(DetailView):
+    model = Book
+    template_name = 'books/book_detail.html'
 
-    @action(detail=True, methods=['post'])
-    def check_out(self, request, pk=None):
-        book = self.get_object()
-        user = request.user.libraryuser
+class BookCreateView(CreateView):
+    model = Book
+    fields = ['title', 'author', 'isbn', 'published_date', 'copies_available']
+    template_name = 'books/book_form.html'
+    success_url = reverse_lazy('book-list')
 
-        if book.copies_available < 1:
-            return Response({"error": "No copies available."}, status=status.HTTP_400_BAD_REQUEST)
+class BookUpdateView(UpdateView):
+    model = Book
+    fields = ['title', 'author', 'isbn', 'published_date', 'copies_available']
+    template_name = 'books/book_form.html'
+    success_url = reverse_lazy('book-list')
 
-        if Transaction.objects.filter(user=user, book=book, return_date__isnull=True).exists():
-            return Response({"error": "You have already checked out this book."}, status=status.HTTP_400_BAD_REQUEST)
+class BookDeleteView(DeleteView):
+    model = Book
+    template_name = 'books/book_confirm_delete.html'
+    success_url = reverse_lazy('book-list')
 
-        Transaction.objects.create(user=user, book=book)
-        book.copies_available -= 1
-        book.save()
+class CustomLoginView(LoginView):
+    template_name = 'books/login.html'
 
-        return Response({"message": "Book checked out successfully."}, status=status.HTTP_200_OK)
+class CustomLogoutView(LogoutView):
+    template_name = 'books/logout.html'
 
-    @action(detail=True, methods=['post'])
-    def return_book(self, request, pk=None):
-        book = self.get_object()
-        user = request.user.libraryuser
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
-        transaction = Transaction.objects.filter(user=user, book=book, return_date__isnull=True).first()
-        if not transaction:
-            return Response({"error": "No active transaction found for this book."}, status=status.HTTP_400_BAD_REQUEST)
+class RegisterView(FormView):
+    template_name = 'books/register.html'
+    form_class = UserCreationForm
+    success_url = '/login/'
 
-        transaction.return_date = timezone.now()
-        transaction.save()
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
-        book.copies_available += 1
-        book.save()
-
-        return Response({"message": "Book returned successfully."}, status=status.HTTP_200_OK)
-
-class LibraryUserViewSet(viewsets.ModelViewSet):
-    queryset = LibraryUser.objects.all()
-    serializer_class = LibraryUserSerializer
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'books/profile.html'
