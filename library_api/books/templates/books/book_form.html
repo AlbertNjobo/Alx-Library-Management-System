@@ -1,6 +1,13 @@
-<h1>{{ view.action|title }} Book</h1>
-<form method="post">
+{% extends 'books/base.html' %}
+
+{% block title %}Book Form{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">{{ view.action|title }} Book</h1>
+<form method="post" class="needs-validation" novalidate>
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="/books/list/" class="btn btn-secondary">Cancel</a>
 </form>
+{% endblock %}

@@ -1,5 +1,16 @@
-<h1>{{ object.title }}</h1>
-<p>Author: {{ object.author }}</p>
-<p>ISBN: {{ object.isbn }}</p>
-<p>Published Date: {{ object.published_date }}</p>
-<p>Copies Available: {{ object.copies_available }}</p>
+{% extends 'books/base.html' %}
+
+{% block title %}Book Details{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">{{ object.title }}</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Author: {{ object.author }}</h5>
+        <p class="card-text">ISBN: {{ object.isbn }}</p>
+        <p class="card-text">Published Date: {{ object.published_date }}</p>
+        <p class="card-text">Copies Available: {{ object.copies_available }}</p>
+        <a href="/books/list/" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}
