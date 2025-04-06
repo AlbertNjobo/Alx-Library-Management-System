@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from books.views import BookListView, BookDetailView, BookCreateView, BookUpdateView, BookDeleteView, CustomLoginView, CustomLogoutView, RegisterView, ProfileView
+from books.views import BookListView, BookDetailView, BookCreateView, BookUpdateView, BookDeleteView, CustomLoginView, RegisterView, ProfileView, ProfileUpdateView, custom_logout_view
 
 urlpatterns = [
     path('', CustomLoginView.as_view(), name='root'),  # Set login as the root URL
@@ -28,7 +28,8 @@ urlpatterns = [
     path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'),
     path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
     path('login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('logout/', custom_logout_view, name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/update/', ProfileUpdateView.as_view(), name='profile-update'),
 ]
