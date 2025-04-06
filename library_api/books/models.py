@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from datetime import timedelta, date
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
@@ -31,3 +32,9 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.user.user.username} - {self.book.title}"
+
+    def is_overdue(self):
+        if not self.return_date:
+            due_date = self.check_out_date + timedelta(days=14)  # 14-day borrowing period
+            return date.today() > due_date
+        return False
