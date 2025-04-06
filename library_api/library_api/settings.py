@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'books',  # Custom app for managing books
-    'django_filters',  # Ensure this is correctly added
+    'django_filters',  # For filtering in Django REST Framework
 ]
 
 MIDDLEWARE = [
@@ -152,5 +152,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lawrencenjobo9@gmail.com'
-EMAIL_HOST_PASSWORD = 'lawren$e02'  # Replace with your email password
+EMAIL_HOST_PASSWORD = 'lawren$e02'  
 

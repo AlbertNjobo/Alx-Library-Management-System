@@ -73,4 +73,3 @@ This document provides a step-by-step guide to test the functionalities of the A
 ## Notes
 - Ensure the development server is running by executing `python manage.py runserver`.
 - Use different browsers or incognito mode to test multiple user sessions.
-- Report any issues or unexpected behavior for debugging.
