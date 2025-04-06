@@ -19,9 +19,8 @@ from django.urls import path, include
 from books.views import BookListView, BookDetailView, BookCreateView, BookUpdateView, BookDeleteView, CustomLoginView, RegisterView, ProfileView, ProfileUpdateView, custom_logout_view, BorrowingHistoryView, AdminDashboardView, TransactionListView, CheckOutView, ReturnBookView
 
 urlpatterns = [
-    path('', CustomLoginView.as_view(), name='root'),  # Set login as the root URL
+    path('', CustomLoginView.as_view(), name='root'),  
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),  # Added login/logout endpoints
     path('books/list/', BookListView.as_view(), name='book-list'),
     path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
     path('books/create/', BookCreateView.as_view(), name='book-create'),
